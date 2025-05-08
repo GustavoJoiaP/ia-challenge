@@ -1,23 +1,21 @@
-import { UUID } from 'crypto';
-
 export class User {
-  public id: UUID;
+  public id: string;
   public email: string;
   public hash: string;
   public createAt: Date;
   public updateAt: Date;
 
   constructor(
-    public userId: UUID,
+    public userId: string,
     public emailUser: string,
     public passwordHash: string,
     public dateCreation: Date,
-    public dateUdpate: Date,
+    public dateUpdate: Date,
   ) {
     this.id = userId;
     this.email = emailUser;
     this.hash = passwordHash;
     this.createAt = dateCreation;
-    this.updateAt = this.dateUdpate;
+    this.updateAt = dateUpdate;
   }
 }
