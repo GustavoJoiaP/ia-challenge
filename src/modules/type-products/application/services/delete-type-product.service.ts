@@ -6,6 +6,7 @@ import {
   ITypeProductRepositoryToken,
 } from 'src/shared/domain/constants';
 import { IDeleteTypeProductService } from 'src/shared/application/services/type-product-services.interface';
+import { InvalidDatasError } from 'src/modules/users/domain/erros/invalid-data.error';
 
 @Injectable()
 export class DeleteTypeProductService implements IDeleteTypeProductService {
@@ -18,6 +19,11 @@ export class DeleteTypeProductService implements IDeleteTypeProductService {
   ) {}
 
   async deleteTypeProduct(id: string): Promise<void> {
-    return this.typeProductRepository.delete(id);
+    try {
+      await this.typeProductRepository.delete(id);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      throw new InvalidDatasError();
+    }
   }
 }
