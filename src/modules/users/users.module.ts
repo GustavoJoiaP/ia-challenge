@@ -7,9 +7,11 @@ import { PrismaModule } from '../prisma/primas.module';
 import { UserFactory } from './domain/factories/user.factory';
 import * as constants from 'src/shared/domain/constants';
 import { PrismaUserRepository } from './infrastructure/repositories/prisma-user.repository';
+import { UserController } from './users.controller';
 
 @Module({
   imports: [PrismaModule],
+  controllers: [UserController],
   providers: [
     // Serviços
     InsertUserService,

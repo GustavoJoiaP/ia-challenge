@@ -25,6 +25,7 @@ export class InsertUserService implements IInsertUserService {
       return this.userRepository.create(newUser);
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         if (error.code === 'P2002') {
           throw new ForbiddenException('Credentials taken');
         }
