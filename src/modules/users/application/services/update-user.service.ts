@@ -7,6 +7,8 @@ import {
   IUserRepositoryToken,
 } from 'src/shared/domain/constants';
 import { IUpdateUserService } from 'src/shared/application/services/user-services.interface';
+import { ResponseInsertUserDTO } from 'src/shared/application/dto/response/response-user.dto';
+import { InvalidDatasError } from '../../domain/erros/invalid-data.error';
 
 @Injectable()
 export class UpdateUserService implements IUpdateUserService {
@@ -18,7 +20,18 @@ export class UpdateUserService implements IUpdateUserService {
     private readonly userFactory: IUserFactory,
   ) {}
 
-  async updateUser(user: User): Promise<User> {
-    return this.userRepository.update(user);
+  async updateUser(user: User): Promise<ResponseInsertUserDTO> {
+    try {
+      const updatedUser = await this.userRepository.update(user);
+      const responseUser = new ResponseInsertUserDTO();
+      responseUser.email = updatedUser.email;
+      responseUser.createdAt = updatedUser.createAt;
+      return responseUser;
+    } catch (error) {
+      if (error instanceof InvalidDatasError) {
+        throw new InvalidDatasError();
+      }
+      throw new InvalidDatasError();
+    }
   }
 }

@@ -28,6 +28,22 @@ import { UserController } from './users.controller';
       provide: constants.IUserRepositoryToken,
       useClass: PrismaUserRepository,
     },
+    {
+      provide: constants.IInsertUserServiceToken,
+      useClass: InsertUserService,
+    },
+    {
+      provide: constants.IUpdateUserServiceToken,
+      useClass: UpdateUserService,
+    },
+    {
+      provide: constants.IDeleteUserServiceToken,
+      useClass: DeleteUserService,
+    },
+    {
+      provide: constants.IReadUserServiceToken,
+      useClass: ReadUserService,
+    },
   ],
   exports: [
     InsertUserService,
