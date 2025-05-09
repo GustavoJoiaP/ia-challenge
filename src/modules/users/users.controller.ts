@@ -50,6 +50,7 @@ export class UserController {
   @Post('insert')
   async signup(@Body() dto: RequestInsertUserDTO) {
     try {
+      console.log(dto.email);
       return await this.insertUserService.createUser(dto);
     } catch (error) {
       if (error instanceof InvalidDatasError) {

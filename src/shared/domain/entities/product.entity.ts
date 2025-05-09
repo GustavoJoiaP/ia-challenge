@@ -1,19 +1,18 @@
-import { UUID } from 'node:crypto';
 import { TypeProduct } from './typeProduct.entity';
 
 export class Product {
-  public productId: UUID;
+  public productId: string;
   public name: string;
   public description: string;
-  public TypeProduct: TypeProduct;
+  public TypeProduct: string;
   public price: number;
   public stock: number;
   public createAt: Date;
   public updateAt: Date;
 
   constructor(
-    public id: UUID,
-    public typeProduct: TypeProduct,
+    public id: string,
+    public typeProduct: string,
     public typeProductName: string,
     public typeProductDescription: string,
     public amountPrice: number,

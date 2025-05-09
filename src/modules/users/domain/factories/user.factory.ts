@@ -40,9 +40,9 @@ export class UserFactory implements IUserFactory {
     createAt: Date,
   ): User {
     try {
-      this.validateEmail(email);
-      this.validatePassword(password);
-
+      // this.validateEmail(email);
+      // this.validatePassword(password);
+      console.log('aqui');
       const now = new Date();
       return new User(userId, email, password, createAt, now);
     } catch (error) {

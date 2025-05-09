@@ -12,14 +12,14 @@ export class PrismaUserRepository implements IUserRepository {
 
   async create(user: User): Promise<User> {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+      console.log('aqui2');
       const createdUser = await this.prisma.user.create({
         data: {
           email: user.email,
           hash: user.hash,
         },
       });
-
+      console.log('aqui3');
       return new User(
         createdUser.id,
         createdUser.email,

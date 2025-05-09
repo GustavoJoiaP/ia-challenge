@@ -1,0 +1,99 @@
+import { Injectable, Inject } from '@nestjs/common';
+import { IProductRepository } from 'src/shared/domain/repository/product-repository.interface';
+import {
+  IProductFactoryToken,
+  IProductRepositoryToken,
+} from 'src/shared/domain/constants';
+import { ResponseProductDTO } from 'src/shared/application/dto/response/response-product.dto';
+import { IProductFactory } from 'src/shared/domain/factories/product-factory.interface';
+import { InvalidDatasError } from 'src/shared/domain/erros/invalid-data.error';
+
+@Injectable()
+export class ReadProductService {
+  constructor(
+    @Inject(IProductRepositoryToken)
+    private readonly productRepository: IProductRepository,
+
+    @Inject(IProductFactoryToken)
+    private readonly userFactory: IProductFactory,
+  ) {}
+
+  async findById(id: string): Promise<ResponseProductDTO | null> {
+    const product = await this.productRepository.findById(id);
+    if (!product) return null;
+
+    const responseProduct = new ResponseProductDTO();
+    responseProduct.name = product.name;
+    responseProduct.description = product.description;
+    responseProduct.price = product.price;
+    responseProduct.stock = product.stock;
+    responseProduct.typeProductId = product.TypeProduct.typeProductId;
+    responseProduct.createdAt = product.createAt;
+    return responseProduct;
+  }
+
+  async findByName(name: string): Promise<ResponseProductDTO[] | null> {
+    try {
+      const products = await this.productRepository.findByName(name);
+      if (!products) return [];
+
+      return products.map((product) => {
+        const responseProduct = new ResponseProductDTO();
+        responseProduct.name = product.name;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+        responseProduct.description = product.description;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+        responseProduct.price = product.price;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+        responseProduct.stock = product.stock;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+        responseProduct.typeProductId = product.TypeProduct.typeProductId;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+        responseProduct.createdAt = product.createAt;
+        return responseProduct;
+      });
+    } catch (error) {
+      if (error instanceof InvalidDatasError) {
+        throw new InvalidDatasError();
+      }
+      throw new InvalidDatasError();
+    }
+  }
+
+  async findByType(typeProduct: string): Promise<ResponseProductDTO[] | null> {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+    const products = await this.productRepository.findByType(typeProduct);
+    if (!products) return [];
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+    return products.map((product) => {
+      const responseProduct = new ResponseProductDTO();
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      responseProduct.name = product.name;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      responseProduct.description = product.description;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      responseProduct.price = product.price;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      responseProduct.stock = product.stock;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      responseProduct.typeProductId = product.TypeProduct.typeProductId;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      responseProduct.createdAt = product.createAt;
+      return responseProduct;
+    });
+  }
+
+  async findAll(): Promise<ResponseProductDTO[] | null> {
+    const products = await this.productRepository.findAll();
+    return products.map((product) => {
+      const responseProduct = new ResponseProductDTO();
+      responseProduct.name = product.name;
+      responseProduct.description = product.description;
+      responseProduct.price = product.price;
+      responseProduct.stock = product.stock;
+      responseProduct.typeProductId = product.TypeProduct.typeProductId;
+      responseProduct.createdAt = product.createAt;
+      return responseProduct;
+    });
+  }
+}
