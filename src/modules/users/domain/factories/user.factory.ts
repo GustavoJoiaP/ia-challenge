@@ -1,8 +1,8 @@
 import { v4 as uuidv4 } from 'uuid';
 import { User } from 'src/shared/domain/entities/user.entity';
-import { IUserFacotry } from 'src/shared/domain/factories/user.factory';
+import { IUserFactory } from 'src/shared/domain/factories/user-factory.interface';
 
-export class UserFactory implements IUserFacotry {
+export class UserFactory implements IUserFactory {
   makeNew(email: string, password: string): User {
     try {
       const userId = uuidv4();

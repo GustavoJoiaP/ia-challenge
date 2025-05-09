@@ -1,6 +1,6 @@
 import { User } from '../entities/user.entity';
 
-export interface IUserFacotry {
+export interface IUserFactory {
   makeNew(email: string, password: string): User;
   makeExistent(
     userId: string,
