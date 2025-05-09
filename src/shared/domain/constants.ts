@@ -17,3 +17,11 @@ export const IDeleteTypeProductServiceToken = Symbol(
   'IDeleteTypeProductService',
 );
 export const IReadTypeProductServiceToken = Symbol('IReadTypeProductService');
+
+// Product
+export const IProductFactoryToken = 'IProductFactory';
+export const IProductRepositoryToken = 'IProductRepository';
+export const IInsertProductServiceToken = 'IInsertProductService';
+export const IUpdateProductServiceToken = 'IUpdateProductService';
+export const IDeleteProductServiceToken = 'IDeleteProductService';
+export const IReadProductServiceToken = 'IReadProductService';

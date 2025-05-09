@@ -1,10 +1,8 @@
 import { Product } from '../entities/product.entity';
-import { UUID } from 'crypto';
-import { TypeProduct } from '../entities/typeProduct.entity';
 
 export interface IProductFactory {
   makeNew(
-    typeProduct: TypeProduct,
+    typeProduct: string,
     name: string,
     description: string,
     price: number,
@@ -12,13 +10,12 @@ export interface IProductFactory {
   ): Product;
 
   makeExistent(
-    productId: UUID,
-    typeProduct: TypeProduct,
+    productId: string,
+    typeProduct: string,
     name: string,
     description: string,
     price: number,
     stock: number,
     createdAt: Date,
-    updatedAt: Date,
   ): Product;
 }
