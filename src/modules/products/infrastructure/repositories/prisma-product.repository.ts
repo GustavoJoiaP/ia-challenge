@@ -1,66 +1,64 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/shared/infrastructure/prisma/prisma.service';
 import { IProductRepository } from 'src/shared/domain/repository/product-repository.interface';
 import { Product } from 'src/shared/domain/entities/product.entity';
-import { TypeProduct } from 'src/shared/domain/entities/typeProduct.entity';
-import { UUID } from 'crypto';
+import { PrismaService } from 'src/modules/prisma/prisma.service';
 
 @Injectable()
 export class PrismaProductRepository implements IProductRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(product: Product): Promise<Product> {
-    const createdProduct = await this.prisma.product.create({
-      data: {
-        id: product.productId,
-        name: product.name,
-        description: product.description,
-        price: product.price,
-        stock: product.stock,
-        typeProductId: product.TypeProduct.typeProductId,
-      },
-      include: {
-        typeProduct: true,
-      },
-    });
+    console.log('Creating product with data:', product);
+    try {
+      const createdProduct = await this.prisma.product.create({
+        data: {
+          id: product.id,
+          name: product.name,
+          description: product.description,
+          price: Number(product.price),
+          stock: Number(product.stock),
+          typeId: product.typeProduct,
+        },
+      });
+      console.log('Product created successfully:', createdProduct);
 
-    return new Product(
-      createdProduct.id,
-      new TypeProduct(
-        createdProduct.typeProduct.id,
-        createdProduct.typeProduct.name,
-        createdProduct.typeProduct.description,
-        createdProduct.typeProduct.createdAt,
-        createdProduct.typeProduct.updatedAt,
-      ),
-      createdProduct.name,
-      createdProduct.description,
-      createdProduct.price,
-      createdProduct.stock,
-      createdProduct.createdAt,
-      createdProduct.updatedAt,
-    );
+      return new Product(
+        createdProduct.id,
+        createdProduct.typeId,
+        createdProduct.name,
+        createdProduct.description,
+        createdProduct.price,
+        createdProduct.stock,
+        createdProduct.createdAt,
+        createdProduct.updatedAt,
+      );
+    } catch (error) {
+      console.error('Error creating product:', error);
+      throw error;
+    }
   }
 
-  async findById(id: UUID): Promise<Product | null> {
+  async findById(id: string): Promise<Product | null> {
     const product = await this.prisma.product.findUnique({
       where: { id },
       include: {
-        typeProduct: true,
+        type: true,
       },
     });
 
-    if (!product) return null;
+    if (!product) {
+      throw new Error('Product not found');
+    }
+    const oneTypeProduct = await this.prisma.typeProduct.findUnique({
+      where: { id: product.type.id },
+    });
+    if (!oneTypeProduct) {
+      throw new Error('Type product not found');
+    }
 
     return new Product(
       product.id,
-      new TypeProduct(
-        product.typeProduct.id,
-        product.typeProduct.name,
-        product.typeProduct.description,
-        product.typeProduct.createdAt,
-        product.typeProduct.updatedAt,
-      ),
+      oneTypeProduct.id,
       product.name,
       product.description,
       product.price,
@@ -74,7 +72,7 @@ export class PrismaProductRepository implements IProductRepository {
     const products = await this.prisma.product.findMany({
       where: { name: { contains: name } },
       include: {
-        typeProduct: true,
+        type: true,
       },
     });
 
@@ -82,13 +80,7 @@ export class PrismaProductRepository implements IProductRepository {
       (product) =>
         new Product(
           product.id,
-          new TypeProduct(
-            product.typeProduct.id,
-            product.typeProduct.name,
-            product.typeProduct.description,
-            product.typeProduct.createdAt,
-            product.typeProduct.updatedAt,
-          ),
+          product.typeId,
           product.name,
           product.description,
           product.price,
@@ -99,25 +91,25 @@ export class PrismaProductRepository implements IProductRepository {
     );
   }
 
-  async findByType(typeProduct: TypeProduct): Promise<Product[]> {
+  async findByType(typeProduct: string): Promise<Product[]> {
     const products = await this.prisma.product.findMany({
-      where: { typeProductId: typeProduct.typeProductId },
+      where: { typeId: typeProduct },
       include: {
-        typeProduct: true,
+        type: true,
       },
     });
+    const oneTypeProduct = await this.prisma.typeProduct.findUnique({
+      where: { id: typeProduct },
+    });
+    if (!oneTypeProduct) {
+      throw new Error('Type product not found');
+    }
 
     return products.map(
       (product) =>
         new Product(
           product.id,
-          new TypeProduct(
-            product.typeProduct.id,
-            product.typeProduct.name,
-            product.typeProduct.description,
-            product.typeProduct.createdAt,
-            product.typeProduct.updatedAt,
-          ),
+          product.typeId,
           product.name,
           product.description,
           product.price,
@@ -131,7 +123,7 @@ export class PrismaProductRepository implements IProductRepository {
   async findAll(): Promise<Product[]> {
     const products = await this.prisma.product.findMany({
       include: {
-        typeProduct: true,
+        type: true,
       },
     });
 
@@ -139,13 +131,7 @@ export class PrismaProductRepository implements IProductRepository {
       (product) =>
         new Product(
           product.id,
-          new TypeProduct(
-            product.typeProduct.id,
-            product.typeProduct.name,
-            product.typeProduct.description,
-            product.typeProduct.createdAt,
-            product.typeProduct.updatedAt,
-          ),
+          product.type.id,
           product.name,
           product.description,
           product.price,
@@ -158,28 +144,22 @@ export class PrismaProductRepository implements IProductRepository {
 
   async update(product: Product): Promise<Product> {
     const updatedProduct = await this.prisma.product.update({
-      where: { id: product.productId },
+      where: { id: product.id },
       data: {
         name: product.name,
         description: product.description,
         price: product.price,
         stock: product.stock,
-        typeProductId: product.TypeProduct.typeProductId,
+        typeId: product.typeProduct,
       },
       include: {
-        typeProduct: true,
+        type: true,
       },
     });
 
     return new Product(
       updatedProduct.id,
-      new TypeProduct(
-        updatedProduct.typeProduct.id,
-        updatedProduct.typeProduct.name,
-        updatedProduct.typeProduct.description,
-        updatedProduct.typeProduct.createdAt,
-        updatedProduct.typeProduct.updatedAt,
-      ),
+      updatedProduct.typeId,
       updatedProduct.name,
       updatedProduct.description,
       updatedProduct.price,
@@ -189,14 +169,15 @@ export class PrismaProductRepository implements IProductRepository {
     );
   }
 
-  async delete(id: UUID): Promise<boolean> {
+  async delete(id: string): Promise<boolean> {
     try {
       await this.prisma.product.delete({
         where: { id },
       });
       return true;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       return false;
     }
   }
-} 
+}

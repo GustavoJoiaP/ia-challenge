@@ -1,7 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { Product } from 'src/shared/domain/entities/product.entity';
 import { IProductFactory } from 'src/shared/domain/factories/product-factory.interface';
-import { TypeProduct } from 'src/shared/domain/entities/typeProduct.entity';
 import { InvalidDatasError } from 'src/shared/domain/erros/invalid-data.error';
 
 export class ProductFactory implements IProductFactory {
@@ -18,7 +17,7 @@ export class ProductFactory implements IProductFactory {
   }
 
   makeNew(
-    typeProduct: TypeProduct,
+    typeProduct: string,
     name: string,
     description: string,
     price: number,
@@ -30,7 +29,7 @@ export class ProductFactory implements IProductFactory {
 
       const productId = uuidv4();
       const now = new Date();
-      return new Product(
+      const product = new Product(
         productId as `${string}-${string}-${string}-${string}-${string}`,
         typeProduct,
         name,
@@ -40,6 +39,8 @@ export class ProductFactory implements IProductFactory {
         now,
         now,
       );
+      console.log(product);
+      return product;
     } catch (error) {
       console.error('Erro ao executar operação:', error);
       throw error;
@@ -48,17 +49,17 @@ export class ProductFactory implements IProductFactory {
 
   makeExistent(
     productId: string,
-    typeProduct: TypeProduct,
+    typeProduct: string,
     name: string,
     description: string,
     price: number,
     stock: number,
     createdAt: Date,
-    updatedAt: Date,
   ): Product {
     try {
       this.validatePrice(price);
       this.validateStock(stock);
+      const now = new Date();
       return new Product(
         productId as `${string}-${string}-${string}-${string}-${string}`,
         typeProduct,
@@ -67,7 +68,7 @@ export class ProductFactory implements IProductFactory {
         price,
         stock,
         createdAt,
-        updatedAt,
+        now,
       );
     } catch (error) {
       console.error('Erro ao executar operação:', error);

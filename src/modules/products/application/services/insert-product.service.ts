@@ -30,14 +30,16 @@ export class InsertProductService {
         product.price,
         product.stock,
       );
+      console.log('after factory');
       const createdProduct = await this.productRepository.create(newProduct);
+      console.log('after create');
       const responseProduct = new ResponseProductDTO();
       responseProduct.name = createdProduct.name;
       responseProduct.description = createdProduct.description;
       responseProduct.price = createdProduct.price;
       responseProduct.stock = createdProduct.stock;
-      responseProduct.typeProductId = createdProduct.TypeProduct.typeProductId;
-      responseProduct.createdAt = createdProduct.createAt;
+      responseProduct.typeProductId = createdProduct.typeProduct;
+      responseProduct.createdAt = createdProduct.createdAt;
       return responseProduct;
     } catch (error) {
       if (error instanceof InvalidDatasError) {

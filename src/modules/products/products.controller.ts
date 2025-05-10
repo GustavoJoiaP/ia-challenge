@@ -32,7 +32,7 @@ export class ProductController {
     private readonly deleteProductService: DeleteProductService,
   ) {}
 
-  @Post()
+  @Post('insert')
   async createProduct(@Body() product: RequestInsertProductDTO) {
     return await this.insertProductService.createProduct(product);
   }

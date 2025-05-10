@@ -21,12 +21,8 @@ export class InsertUserService implements IInsertUserService {
   ) {}
   async createUser(user: RequestInsertUserDTO): Promise<ResponseInsertUserDTO> {
     try {
-      console.log('aqui');
-      console.log(user.email);
-      const newUser = this.userFactory.makeNew(user.email, user.password);
-      console.log(newUser);
+      const newUser = await this.userFactory.makeNew(user.email, user.password);
       const createdUser = await this.userRepository.create(newUser);
-      console.log('aqui3');
       const responseUser = new ResponseInsertUserDTO();
       responseUser.email = createdUser.email;
       responseUser.createdAt = createdUser.createAt;

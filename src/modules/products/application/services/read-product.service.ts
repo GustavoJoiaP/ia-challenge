@@ -27,8 +27,8 @@ export class ReadProductService {
     responseProduct.description = product.description;
     responseProduct.price = product.price;
     responseProduct.stock = product.stock;
-    responseProduct.typeProductId = product.TypeProduct.typeProductId;
-    responseProduct.createdAt = product.createAt;
+    responseProduct.typeProductId = product.typeProduct;
+    responseProduct.createdAt = product.createdAt;
     return responseProduct;
   }
 
@@ -40,16 +40,11 @@ export class ReadProductService {
       return products.map((product) => {
         const responseProduct = new ResponseProductDTO();
         responseProduct.name = product.name;
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
         responseProduct.description = product.description;
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
         responseProduct.price = product.price;
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
         responseProduct.stock = product.stock;
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-        responseProduct.typeProductId = product.TypeProduct.typeProductId;
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-        responseProduct.createdAt = product.createAt;
+        responseProduct.typeProductId = product.typeProduct;
+        responseProduct.createdAt = product.createdAt;
         return responseProduct;
       });
     } catch (error) {
@@ -61,24 +56,16 @@ export class ReadProductService {
   }
 
   async findByType(typeProduct: string): Promise<ResponseProductDTO[] | null> {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
     const products = await this.productRepository.findByType(typeProduct);
     if (!products) return [];
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     return products.map((product) => {
       const responseProduct = new ResponseProductDTO();
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
       responseProduct.name = product.name;
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
       responseProduct.description = product.description;
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
       responseProduct.price = product.price;
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
       responseProduct.stock = product.stock;
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-      responseProduct.typeProductId = product.TypeProduct.typeProductId;
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-      responseProduct.createdAt = product.createAt;
+      responseProduct.typeProductId = product.typeProduct;
+      responseProduct.createdAt = product.createdAt;
       return responseProduct;
     });
   }
@@ -91,8 +78,8 @@ export class ReadProductService {
       responseProduct.description = product.description;
       responseProduct.price = product.price;
       responseProduct.stock = product.stock;
-      responseProduct.typeProductId = product.TypeProduct.typeProductId;
-      responseProduct.createdAt = product.createAt;
+      responseProduct.typeProductId = product.typeProduct;
+      responseProduct.createdAt = product.createdAt;
       return responseProduct;
     });
   }

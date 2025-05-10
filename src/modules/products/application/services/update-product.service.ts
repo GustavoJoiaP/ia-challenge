@@ -35,7 +35,7 @@ export class UpdateProductService {
         product.description,
         product.price,
         product.stock,
-        existingProduct.createAt,
+        existingProduct.createdAt,
       );
 
       const result = await this.productRepository.update(updatedProduct);
@@ -44,10 +44,9 @@ export class UpdateProductService {
       responseProduct.description = result.description;
       responseProduct.price = result.price;
       responseProduct.stock = result.stock;
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      responseProduct.typeProductId = result.typeProduct.typeProductId;
-      responseProduct.createdAt = result.createAt;
-      responseProduct.updatedAt = result.updateAt;
+      responseProduct.typeProductId = result.typeProduct;
+      responseProduct.createdAt = result.createdAt;
+      responseProduct.updatedAt = result.updatedAt;
       return responseProduct;
     } catch (error) {
       if (error instanceof InvalidDatasError) {
