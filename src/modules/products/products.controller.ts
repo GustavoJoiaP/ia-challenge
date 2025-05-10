@@ -7,113 +7,65 @@ import {
   Body,
   Param,
   Inject,
-  HttpException,
-  HttpStatus,
 } from '@nestjs/common';
-import { RequestInsertProductDTO } from './application/dtos/request-insert-product.dto';
-import { IInsertProductService } from 'src/shared/application/services/product-services.interface';
-import { IReadProductService } from 'src/shared/application/services/product-services.interface';
-import { IUpdateProductService } from 'src/shared/application/services/product-services.interface';
-import { IDeleteProductService } from 'src/shared/application/services/product-services.interface';
-import {
-  IInsertProductServiceToken,
-  IReadProductServiceToken,
-  IUpdateProductServiceToken,
-  IDeleteProductServiceToken,
-} from 'src/shared/domain/constants';
-import { ResponseProductDTO } from 'src/shared/application/dto/response/response-product.dto';
+import { InsertProductService } from './application/services/insert-product.service';
+import { ReadProductService } from './application/services/read-product.service';
+import { UpdateProductService } from './application/services/update-product.service';
+import { DeleteProductService } from './application/services/delete-product.service';
+import { RequestInsertProductDTO } from 'src/shared/application/dto/request/request-product.dto';
+import { RequestUpdateProductDTO } from 'src/shared/application/dto/request/request-product.dto';
+import * as constants from 'src/shared/domain/constants';
 
 @Controller('products')
-export class ProductsController {
+export class ProductController {
   constructor(
-    @Inject(IInsertProductServiceToken)
-    private readonly insertProductService: IInsertProductService,
+    @Inject(constants.IInsertProductServiceToken)
+    private readonly insertProductService: InsertProductService,
 
-    @Inject(IReadProductServiceToken)
-    private readonly readProductService: IReadProductService,
+    @Inject(constants.IReadProductServiceToken)
+    private readonly readProductService: ReadProductService,
 
-    @Inject(IUpdateProductServiceToken)
-    private readonly updateProductService: IUpdateProductService,
+    @Inject(constants.IUpdateProductServiceToken)
+    private readonly updateProductService: UpdateProductService,
 
-    @Inject(IDeleteProductServiceToken)
-    private readonly deleteProductService: IDeleteProductService,
+    @Inject(constants.IDeleteProductServiceToken)
+    private readonly deleteProductService: DeleteProductService,
   ) {}
 
-  @Get()
-  async findAll(): Promise<ResponseProductDTO[]> {
-    try {
-      return await this.readProductService.findAllProducts();
-    } catch (error) {
-      throw new HttpException(
-        'Error finding all products',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
-
-  @Get(':name')
-  async findByName(@Param('name') name: string): Promise<ResponseProductDTO> {
-    try {
-      return await this.readProductService.findProductByName(name);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
-      throw new HttpException(
-        'Error finding product by name',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+  @Post('insert')
+  async createProduct(@Body() product: RequestInsertProductDTO) {
+    return await this.insertProductService.createProduct(product);
   }
 
   @Get(':id')
-  async findById(@Param('id') id: string): Promise<ResponseProductDTO> {
-    try {
-      return await this.readProductService.findProductById(id);
-    } catch (error) {
-      throw new HttpException(
-        'Error finding product by id',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+  async findById(@Param('id') id: string) {
+    return await this.readProductService.findById(id);
   }
 
-  @Post()
-  async create(
-    @Body() product: RequestInsertProductDTO,
-  ): Promise<ResponseProductDTO> {
-    try {
-      return await this.insertProductService.createProduct(product);
-    } catch (error) {
-      throw new HttpException(
-        'Error creating product',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+  @Get('name/:name')
+  async findByName(@Param('name') name: string) {
+    return await this.readProductService.findByName(name);
+  }
+
+  @Get('type/:typeId')
+  async findByType(@Param('typeId') typeId: string) {
+    return await this.readProductService.findByType(typeId);
+  }
+
+  @Get()
+  async findAll() {
+    return await this.readProductService.findAll();
   }
 
   @Put(':id')
-  async update(
-    @Param('id') id: string,
-    @Body() product: RequestUpdateProductDTO,
-  ): Promise<ResponseProductDTO> {
-    try {
-      return await this.updateProductService.updateProduct(id, product);
-    } catch (error) {
-      throw new HttpException(
-        'Error updating product',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+  async updateProduct(@Body() product: RequestUpdateProductDTO) {
+    return await this.updateProductService.updateProduct(product);
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: string): Promise<void> {
-    try {
-      await this.deleteProductService.deleteProduct(id);
-    } catch (error) {
-      throw new HttpException(
-        'Error deleting product',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+  async deleteProduct(
+    @Param('id') id: `${string}-${string}-${string}-${string}-${string}`,
+  ) {
+    return await this.deleteProductService.deleteProduct(id);
   }
-} 
+}

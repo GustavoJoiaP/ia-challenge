@@ -8,4 +8,4 @@ export interface ITypeProductFactory {
     description: string,
     createAt: Date,
   ): TypeProduct;
-} 
+}

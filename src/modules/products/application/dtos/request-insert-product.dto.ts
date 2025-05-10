@@ -4,4 +4,5 @@ export class RequestInsertProductDTO {
   price: number;
   stock: number;
   typeProductId: string;
-} 
+}
+

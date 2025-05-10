@@ -53,24 +53,24 @@ model OrderItem {
 }
 
 model Product {
-  id          String      @id @default(uuid())
-  typeId      String      @map("type_id")
-  name        String
-  description String
-  price       Float
-  stock       Int
-  createdAt   DateTime    @default(now()) @map("created_at")
-  updatedAt   DateTime    @updatedAt @map("updated_at")
-  type        TypeProduct @relation(fields: [typeId], references: [id])
-  orderItems  OrderItem[]
-  cartItems   CartItem[]
+  id            String      @id @default(uuid())
+  name          String
+  description   String
+  price         Float
+  typeProductId String      @map("type_id")
+  typeProduct   TypeProduct @relation(fields: [typeProductId], references: [id])
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @updatedAt @map("updated_at")
+  stock         Int
+  orderItems    OrderItem[]
+  cartItems     CartItem[]
 
   @@map("products")
 }
 
 model TypeProduct {
   id          String    @id @default(uuid())
-  name        String
+  name        String    @unique
   description String
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")

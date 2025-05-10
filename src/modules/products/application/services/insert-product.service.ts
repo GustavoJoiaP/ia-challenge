@@ -5,13 +5,12 @@ import {
   IProductFactoryToken,
   IProductRepositoryToken,
 } from 'src/shared/domain/constants';
-import { IInsertProductService } from 'src/shared/application/services/product-services.interface';
+import { InvalidDatasError } from 'src/shared/domain/erros/invalid-data.error';
 import { RequestInsertProductDTO } from 'src/shared/application/dto/request/request-product.dto';
 import { ResponseProductDTO } from 'src/shared/application/dto/response/response-product.dto';
-import { InvalidDatasError } from 'src/modules/users/domain/erros/invalid-data.error';
 
 @Injectable()
-export class InsertProductService implements IInsertProductService {
+export class InsertProductService {
   constructor(
     @Inject(IProductRepositoryToken)
     private readonly productRepository: IProductRepository,
@@ -31,8 +30,17 @@ export class InsertProductService implements IInsertProductService {
         product.price,
         product.stock,
       );
+      console.log('after factory');
       const createdProduct = await this.productRepository.create(newProduct);
-      return new ResponseProductDTO(createdProduct);
+      console.log('after create');
+      const responseProduct = new ResponseProductDTO();
+      responseProduct.name = createdProduct.name;
+      responseProduct.description = createdProduct.description;
+      responseProduct.price = createdProduct.price;
+      responseProduct.stock = createdProduct.stock;
+      responseProduct.typeProductId = createdProduct.typeProduct;
+      responseProduct.createdAt = createdProduct.createdAt;
+      return responseProduct;
     } catch (error) {
       if (error instanceof InvalidDatasError) {
         throw new InvalidDatasError();

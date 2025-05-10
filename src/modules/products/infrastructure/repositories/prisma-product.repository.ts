@@ -1,208 +1,183 @@
 import { Injectable } from '@nestjs/common';
 import { IProductRepository } from 'src/shared/domain/repository/product-repository.interface';
-import { RepositoryError } from 'src/shared/domain/errors/repository.error';
-import { PrismaService } from 'src/modules/prisma/prisma.service';
-import { error } from 'console';
 import { Product } from 'src/shared/domain/entities/product.entity';
+import { PrismaService } from 'src/modules/prisma/prisma.service';
 
 @Injectable()
 export class PrismaProductRepository implements IProductRepository {
-  private readonly entity = 'Product';
   constructor(private readonly prisma: PrismaService) {}
 
   async create(product: Product): Promise<Product> {
+    console.log('Creating product with data:', product);
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
       const createdProduct = await this.prisma.product.create({
         data: {
           id: product.id,
           name: product.name,
           description: product.description,
-          price: product.price,
-          stock: product.stock,
-          typeId: product.typeProductId,
-          createdAt: product.createAt,
-          updatedAt: product.updateAt,
+          price: Number(product.price),
+          stock: Number(product.stock),
+          typeId: product.typeProduct,
         },
       });
+      console.log('Product created successfully:', createdProduct);
 
       return new Product(
         createdProduct.id,
+        createdProduct.typeId,
         createdProduct.name,
         createdProduct.description,
         createdProduct.price,
         createdProduct.stock,
-        createdProduct.typeId,
         createdProduct.createdAt,
         createdProduct.updatedAt,
       );
     } catch (error) {
       console.error('Error creating product:', error);
-      throw new RepositoryError(
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        `Falha ao  ${error.message}`,
-        'create',
-        this.entity,
-        error as Error,
-      );
+      throw error;
     }
   }
 
-  async findById(id: string): Promise<Product> {
-    try {
-      const product = await this.prisma.product.findUnique({
-        where: { id },
-      });
+  async findById(id: string): Promise<Product | null> {
+    const product = await this.prisma.product.findUnique({
+      where: { id },
+      include: {
+        type: true,
+      },
+    });
 
-      if (!product) {
-        throw new RepositoryError(
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-          `Falha ao buscar produto por nome`,
-          'create',
-          this.entity,
-          error as unknown as Error,
-        );
-      }
-
-      return new Product(
-        product.id,
-        product.name,
-        product.description,
-        product.price,
-        product.stock,
-        product.typeId,
-        product.createdAt,
-        product.updatedAt,
-      );
-    } catch (error) {
-      console.error('Error finding product by id:', error);
-      throw new RepositoryError(
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        `Falha ao buscar produto por ID: ${error.message}`,
-        'create',
-        this.entity,
-        error as Error,
-      );
+    if (!product) {
+      throw new Error('Product not found');
     }
+    const oneTypeProduct = await this.prisma.typeProduct.findUnique({
+      where: { id: product.type.id },
+    });
+    if (!oneTypeProduct) {
+      throw new Error('Type product not found');
+    }
+
+    return new Product(
+      product.id,
+      oneTypeProduct.id,
+      product.name,
+      product.description,
+      product.price,
+      product.stock,
+      product.createdAt,
+      product.updatedAt,
+    );
   }
 
-  async findByName(name: string): Promise<Product> {
-    try {
-      const product = await this.prisma.product.findFirst({
-        where: { name },
-      });
+  async findByName(name: string): Promise<Product[]> {
+    const products = await this.prisma.product.findMany({
+      where: { name: { contains: name } },
+      include: {
+        type: true,
+      },
+    });
 
-      if (!product) {
-        throw new RepositoryError(
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-          `Falha ao buscar produto por nome`,
-          'create',
-          this.entity,
-          error as unknown as Error,
-        );
-      }
+    return products.map(
+      (product) =>
+        new Product(
+          product.id,
+          product.typeId,
+          product.name,
+          product.description,
+          product.price,
+          product.stock,
+          product.createdAt,
+          product.updatedAt,
+        ),
+    );
+  }
 
-      return new Product(
-        product.id,
-        product.name,
-        product.description,
-        product.price,
-        product.stock,
-        product.typeId,
-        product.createdAt,
-        product.updatedAt,
-      );
-    } catch (error) {
-      console.error('Error finding product by name:', error);
-      throw new RepositoryError(
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        `Falha ao buscar produto por nome: ${error.message}`,
-        'create',
-        this.entity,
-        error as Error,
-      );
+  async findByType(typeProduct: string): Promise<Product[]> {
+    const products = await this.prisma.product.findMany({
+      where: { typeId: typeProduct },
+      include: {
+        type: true,
+      },
+    });
+    const oneTypeProduct = await this.prisma.typeProduct.findUnique({
+      where: { id: typeProduct },
+    });
+    if (!oneTypeProduct) {
+      throw new Error('Type product not found');
     }
+
+    return products.map(
+      (product) =>
+        new Product(
+          product.id,
+          product.typeId,
+          product.name,
+          product.description,
+          product.price,
+          product.stock,
+          product.createdAt,
+          product.updatedAt,
+        ),
+    );
   }
 
   async findAll(): Promise<Product[]> {
-    try {
-      const products = await this.prisma.product.findMany();
+    const products = await this.prisma.product.findMany({
+      include: {
+        type: true,
+      },
+    });
 
-      return products.map(
-        (product) =>
-          new Product(
-            product.id,
-            product.name,
-            product.description,
-            product.price,
-            product.stock,
-            product.typeId,
-            product.createdAt,
-            product.updatedAt,
-          ),
-      );
-    } catch (error) {
-      console.error('Error finding all products:', error);
-      throw new RepositoryError(
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        `Falha ao buscar todos os produtos: ${error.message}`,
-        'create',
-        this.entity,
-        error as Error,
-      );
-    }
+    return products.map(
+      (product) =>
+        new Product(
+          product.id,
+          product.type.id,
+          product.name,
+          product.description,
+          product.price,
+          product.stock,
+          product.createdAt,
+          product.updatedAt,
+        ),
+    );
   }
 
   async update(product: Product): Promise<Product> {
-    try {
-      const updatedProduct = await this.prisma.product.update({
-        data: {
-          name: product.name,
-          description: product.description,
-          price: product.price,
-          stock: product.stock,
-          typeId: product.typeProductId,
-          updatedAt: product.updateAt,
-        },
-        where: { id: product.id },
-      });
+    const updatedProduct = await this.prisma.product.update({
+      where: { id: product.id },
+      data: {
+        name: product.name,
+        description: product.description,
+        price: product.price,
+        stock: product.stock,
+        typeId: product.typeProduct,
+      },
+      include: {
+        type: true,
+      },
+    });
 
-      return new Product(
-        updatedProduct.id,
-        updatedProduct.name,
-        updatedProduct.description,
-        updatedProduct.price,
-        updatedProduct.stock,
-        updatedProduct.typeId,
-        updatedProduct.createdAt,
-        updatedProduct.updatedAt,
-      );
-    } catch (error) {
-      console.error('Error updating product:', error);
-      throw new RepositoryError(
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        `Falha ao atualizar produto: ${error.message}`,
-        'create',
-        this.entity,
-        error as Error,
-      );
-    }
+    return new Product(
+      updatedProduct.id,
+      updatedProduct.typeId,
+      updatedProduct.name,
+      updatedProduct.description,
+      updatedProduct.price,
+      updatedProduct.stock,
+      updatedProduct.createdAt,
+      updatedProduct.updatedAt,
+    );
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(id: string): Promise<boolean> {
     try {
       await this.prisma.product.delete({
         where: { id },
       });
+      return true;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      console.error('Error deleting product:', error);
-      throw new RepositoryError(
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        `Falha ao deletar produto: ${error.message}`,
-        'create',
-        this.entity,
-        error as Error,
-      );
+      return false;
     }
   }
 }

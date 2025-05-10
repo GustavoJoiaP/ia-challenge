@@ -1,53 +1,86 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { IProductRepository } from 'src/shared/domain/repository/product-repository.interface';
-import { IProductFactory } from 'src/shared/domain/factories/product-factory.interface';
 import {
   IProductFactoryToken,
   IProductRepositoryToken,
 } from 'src/shared/domain/constants';
-import { IReadProductService } from 'src/shared/application/services/product-services.interface';
 import { ResponseProductDTO } from 'src/shared/application/dto/response/response-product.dto';
-import { InvalidDatasError } from 'src/modules/users/domain/erros/invalid-data.error';
+import { IProductFactory } from 'src/shared/domain/factories/product-factory.interface';
+import { InvalidDatasError } from 'src/shared/domain/erros/invalid-data.error';
 
 @Injectable()
-export class ReadProductService implements IReadProductService {
+export class ReadProductService {
   constructor(
     @Inject(IProductRepositoryToken)
     private readonly productRepository: IProductRepository,
 
     @Inject(IProductFactoryToken)
-    private readonly productFactory: IProductFactory,
+    private readonly userFactory: IProductFactory,
   ) {}
 
-  async findProductById(id: string): Promise<ResponseProductDTO | null> {
+  async findById(id: string): Promise<ResponseProductDTO | null> {
+    const product = await this.productRepository.findById(id);
+    if (!product) return null;
+
+    const responseProduct = new ResponseProductDTO();
+    responseProduct.name = product.name;
+    responseProduct.description = product.description;
+    responseProduct.price = product.price;
+    responseProduct.stock = product.stock;
+    responseProduct.typeProductId = product.typeProduct;
+    responseProduct.createdAt = product.createdAt;
+    return responseProduct;
+  }
+
+  async findByName(name: string): Promise<ResponseProductDTO[] | null> {
     try {
-      const product = await this.productRepository.findById(id);
-      if (!product) return null;
-      return new ResponseProductDTO(product);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const products = await this.productRepository.findByName(name);
+      if (!products) return [];
+
+      return products.map((product) => {
+        const responseProduct = new ResponseProductDTO();
+        responseProduct.name = product.name;
+        responseProduct.description = product.description;
+        responseProduct.price = product.price;
+        responseProduct.stock = product.stock;
+        responseProduct.typeProductId = product.typeProduct;
+        responseProduct.createdAt = product.createdAt;
+        return responseProduct;
+      });
     } catch (error) {
+      if (error instanceof InvalidDatasError) {
+        throw new InvalidDatasError();
+      }
       throw new InvalidDatasError();
     }
   }
 
-  async findProductByName(name: string): Promise<ResponseProductDTO | null> {
-    try {
-      const product = await this.productRepository.findByName(name);
-      if (!product) return null;
-      return new ResponseProductDTO(product);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
-      throw new InvalidDatasError();
-    }
+  async findByType(typeProduct: string): Promise<ResponseProductDTO[] | null> {
+    const products = await this.productRepository.findByType(typeProduct);
+    if (!products) return [];
+    return products.map((product) => {
+      const responseProduct = new ResponseProductDTO();
+      responseProduct.name = product.name;
+      responseProduct.description = product.description;
+      responseProduct.price = product.price;
+      responseProduct.stock = product.stock;
+      responseProduct.typeProductId = product.typeProduct;
+      responseProduct.createdAt = product.createdAt;
+      return responseProduct;
+    });
   }
 
-  async findAllProducts(): Promise<ResponseProductDTO[]> {
-    try {
-      const products = await this.productRepository.findAll();
-      return products.map((product) => new ResponseProductDTO(product));
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
-      throw new InvalidDatasError();
-    }
+  async findAll(): Promise<ResponseProductDTO[] | null> {
+    const products = await this.productRepository.findAll();
+    return products.map((product) => {
+      const responseProduct = new ResponseProductDTO();
+      responseProduct.name = product.name;
+      responseProduct.description = product.description;
+      responseProduct.price = product.price;
+      responseProduct.stock = product.stock;
+      responseProduct.typeProductId = product.typeProduct;
+      responseProduct.createdAt = product.createdAt;
+      return responseProduct;
+    });
   }
 }

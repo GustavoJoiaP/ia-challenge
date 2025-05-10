@@ -19,9 +19,9 @@ export const IDeleteTypeProductServiceToken = Symbol(
 export const IReadTypeProductServiceToken = Symbol('IReadTypeProductService');
 
 // Product
-export const IProductFactoryToken = 'IProductFactory';
-export const IProductRepositoryToken = 'IProductRepository';
-export const IInsertProductServiceToken = 'IInsertProductService';
-export const IUpdateProductServiceToken = 'IUpdateProductService';
-export const IDeleteProductServiceToken = 'IDeleteProductService';
-export const IReadProductServiceToken = 'IReadProductService';
+export const IProductFactoryToken = Symbol('IProductFactory');
+export const IProductRepositoryToken = Symbol('IProductRepository');
+export const IInsertProductServiceToken = Symbol('IInsertProductService');
+export const IUpdateProductServiceToken = Symbol('IUpdateProductService');
+export const IDeleteProductServiceToken = Symbol('IDeleteProductService');
+export const IReadProductServiceToken = Symbol('IReadProductService');

@@ -1,24 +1,21 @@
-import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
-import { IProductFactory } from 'src/shared/domain/factories/product-factory.interface';
-import { InvalidDatasError } from 'src/modules/users/domain/erros/invalid-data.error';
 import { Product } from 'src/shared/domain/entities/product.entity';
+import { IProductFactory } from 'src/shared/domain/factories/product-factory.interface';
+import { InvalidDatasError } from 'src/shared/domain/erros/invalid-data.error';
 
-@Injectable()
 export class ProductFactory implements IProductFactory {
-  private validateName(name: string): void {
-    if (!name || name.trim().length === 0) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  private validatePrice(price: number): void {
+    if (price <= 0) {
       throw new InvalidDatasError();
     }
   }
 
-  private validateDescription(description: string): void {
-    if (!description || description.trim().length === 0) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  private validateStock(stock: number): void {
+    if (stock < 0) {
       throw new InvalidDatasError();
     }
   }
+
   makeNew(
     typeProduct: string,
     name: string,
@@ -27,21 +24,23 @@ export class ProductFactory implements IProductFactory {
     stock: number,
   ): Product {
     try {
-      this.validateName(name);
-      this.validateDescription(description);
+      this.validatePrice(price);
+      this.validateStock(stock);
 
       const productId = uuidv4();
       const now = new Date();
-      return new Product(
-        productId,
+      const product = new Product(
+        productId as `${string}-${string}-${string}-${string}-${string}`,
+        typeProduct,
         name,
         description,
         price,
         stock,
-        typeProduct,
         now,
         now,
       );
+      console.log(product);
+      return product;
     } catch (error) {
       console.error('Erro ao executar operação:', error);
       throw error;
@@ -58,17 +57,16 @@ export class ProductFactory implements IProductFactory {
     createdAt: Date,
   ): Product {
     try {
-      this.validateName(name);
-      this.validateDescription(description);
-
+      this.validatePrice(price);
+      this.validateStock(stock);
       const now = new Date();
       return new Product(
-        productId,
+        productId as `${string}-${string}-${string}-${string}-${string}`,
+        typeProduct,
         name,
         description,
         price,
         stock,
-        typeProduct,
         createdAt,
         now,
       );

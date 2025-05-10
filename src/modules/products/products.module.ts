@@ -1,49 +1,55 @@
 import { Module } from '@nestjs/common';
-import { PrismaModule } from 'src/shared/infrastructure/prisma/prisma.module';
-import { ProductsController } from './products.controller';
 import { InsertProductService } from './application/services/insert-product.service';
 import { ReadProductService } from './application/services/read-product.service';
 import { UpdateProductService } from './application/services/update-product.service';
 import { DeleteProductService } from './application/services/delete-product.service';
+import { PrismaModule } from '../prisma/primas.module';
 import { ProductFactory } from './domain/factories/product.factory';
+import * as constants from 'src/shared/domain/constants';
 import { PrismaProductRepository } from './infrastructure/repositories/prisma-product.repository';
-import {
-  IProductFactoryToken,
-  IProductRepositoryToken,
-  IInsertProductServiceToken,
-  IUpdateProductServiceToken,
-  IDeleteProductServiceToken,
-  IReadProductServiceToken,
-} from 'src/shared/domain/constants';
+import { ProductController } from './products.controller';
 
 @Module({
   imports: [PrismaModule],
-  controllers: [ProductsController],
+  controllers: [ProductController],
   providers: [
+    // Serviços
+    InsertProductService,
+    ReadProductService,
+    UpdateProductService,
+    DeleteProductService,
+
+    // Dependências injetáveis
     {
-      provide: IProductFactoryToken,
+      provide: constants.IProductFactoryToken,
       useClass: ProductFactory,
     },
     {
-      provide: IProductRepositoryToken,
+      provide: constants.IProductRepositoryToken,
       useClass: PrismaProductRepository,
     },
     {
-      provide: IInsertProductServiceToken,
+      provide: constants.IInsertProductServiceToken,
       useClass: InsertProductService,
     },
     {
-      provide: IUpdateProductServiceToken,
+      provide: constants.IUpdateProductServiceToken,
       useClass: UpdateProductService,
     },
     {
-      provide: IDeleteProductServiceToken,
+      provide: constants.IDeleteProductServiceToken,
       useClass: DeleteProductService,
     },
     {
-      provide: IReadProductServiceToken,
+      provide: constants.IReadProductServiceToken,
       useClass: ReadProductService,
     },
   ],
+  exports: [
+    InsertProductService,
+    ReadProductService,
+    UpdateProductService,
+    DeleteProductService,
+  ],
 })
-export class ProductsModule {} 
+export class ProductsModule {}
