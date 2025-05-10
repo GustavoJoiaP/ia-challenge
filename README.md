@@ -1,25 +1,25 @@
-# boilerplate-nodejs-fastify 📜
+# ia-challenge 📜
 
 ## Environment Setup ⚙️:
 > [!IMPORTANT]
-> **Make sure you have [nvm](https://github.com/nvm-sh/nvm) installed on your machine.**
+
 >
-> This project was developed using [node v22.13.1 (LTS)](https://nodejs.org/en/download)
+> This project was developed using [node v22.5.1](https://nodejs.org/pt/blog/release/v22.5.1)
 >
-> The package manager used is [npm](https://www.npmjs.com/)
+> The package manager used is [yarn](https://classic.yarnpkg.com/lang/en/docs/install/#windows-stable)
 
 ## How to Set Up the Development Environment:
 
 ### Clone the repository:
 
 ```bash
-$ git clone https://github.com/joaomacedx/boilerplate-nodejs-fastify
+ git clone https://github.com/GustavoJoiaP/ia-challange.git
 ```
 
 ### Install dependencies:
 
 ```bash
-$ npm install
+ npm install
 ```
 
 ### Configure the environment:
@@ -32,27 +32,37 @@ $ npm install
 ### Start the application 🚀:
 
 ``` bash
-$ npm run start
+ npm run start
 ```
 
 ## DB 🗄️
-### Query Builder: Knex ⚡
-This project uses [Knex.js](https://knexjs.org/) as a query builder for database interactions
+### Docker:
+
+- Build the Docker
+  ```bash
+  docker-compose build
+  ```
+- Run the container
+  ```bash
+   docker-compose up
+  ```
+
+### ORM: Prisma ⚡
+This project uses [Prisma](https://www.prisma.io/docs/orm) as a ORM for database interactions
 
 #### Migrations 🔁
 To manage database migrations, use the following commands:
 
 - Create a new migration:
   ```bash
-  $ npm run migrate:make migration_name
+   yarn prisma migrate dev
   ```
 
 - Run the latest migrations:
   ```bash
-  $ npm run migrate:latest
+   yarn prisma db push
   ```
-
-- Rollback the latest migration:
-  ```bash
-  $ npm run migrate:rollback
-  ```
+Build the Docker
+  docker-compose build
+Run the container
+ docker-compose up
