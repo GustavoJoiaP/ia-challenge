@@ -29,11 +29,6 @@
 >
 >  You can create a `.env` file at the root of the project if it doesn't exist and set necessary environment variables such as [.env.example](./.env.example) file
 
-### Start the application 🚀:
-
-``` bash
- npm run start
-```
 
 ## DB 🗄️
 ### Docker:
@@ -62,7 +57,9 @@ To manage database migrations, use the following commands:
   ```bash
    yarn prisma db push
   ```
-Build the Docker
-  docker-compose build
-Run the container
- docker-compose up
+
+ ### Start the application 🚀:
+
+``` bash
+ npm run start
+```

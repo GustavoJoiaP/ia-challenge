@@ -17,14 +17,14 @@ export class PrismaProductRepository implements IProductRepository {
           description: product.description,
           price: Number(product.price),
           stock: Number(product.stock),
-          typeId: product.typeProduct,
+          typeProductId: product.typeProduct,
         },
       });
       console.log('Product created successfully:', createdProduct);
 
       return new Product(
         createdProduct.id,
-        createdProduct.typeId,
+        createdProduct.typeProductId,
         createdProduct.name,
         createdProduct.description,
         createdProduct.price,
@@ -42,7 +42,7 @@ export class PrismaProductRepository implements IProductRepository {
     const product = await this.prisma.product.findUnique({
       where: { id },
       include: {
-        type: true,
+        typeProduct: true,
       },
     });
 
@@ -50,7 +50,7 @@ export class PrismaProductRepository implements IProductRepository {
       throw new Error('Product not found');
     }
     const oneTypeProduct = await this.prisma.typeProduct.findUnique({
-      where: { id: product.type.id },
+      where: { id: product.typeProduct.id },
     });
     if (!oneTypeProduct) {
       throw new Error('Type product not found');
@@ -72,7 +72,7 @@ export class PrismaProductRepository implements IProductRepository {
     const products = await this.prisma.product.findMany({
       where: { name: { contains: name } },
       include: {
-        type: true,
+        typeProduct: true,
       },
     });
 
@@ -80,7 +80,7 @@ export class PrismaProductRepository implements IProductRepository {
       (product) =>
         new Product(
           product.id,
-          product.typeId,
+          product.typeProductId,
           product.name,
           product.description,
           product.price,
@@ -93,9 +93,9 @@ export class PrismaProductRepository implements IProductRepository {
 
   async findByType(typeProduct: string): Promise<Product[]> {
     const products = await this.prisma.product.findMany({
-      where: { typeId: typeProduct },
+      where: { typeProductId: typeProduct },
       include: {
-        type: true,
+        typeProduct: true,
       },
     });
     const oneTypeProduct = await this.prisma.typeProduct.findUnique({
@@ -109,7 +109,7 @@ export class PrismaProductRepository implements IProductRepository {
       (product) =>
         new Product(
           product.id,
-          product.typeId,
+          product.typeProductId,
           product.name,
           product.description,
           product.price,
@@ -123,7 +123,7 @@ export class PrismaProductRepository implements IProductRepository {
   async findAll(): Promise<Product[]> {
     const products = await this.prisma.product.findMany({
       include: {
-        type: true,
+        typeProduct: true,
       },
     });
 
@@ -131,7 +131,7 @@ export class PrismaProductRepository implements IProductRepository {
       (product) =>
         new Product(
           product.id,
-          product.type.id,
+          product.typeProduct.id,
           product.name,
           product.description,
           product.price,
@@ -150,16 +150,16 @@ export class PrismaProductRepository implements IProductRepository {
         description: product.description,
         price: product.price,
         stock: product.stock,
-        typeId: product.typeProduct,
+        typeProductId: product.typeProduct,
       },
       include: {
-        type: true,
+        typeProduct: true,
       },
     });
 
     return new Product(
       updatedProduct.id,
-      updatedProduct.typeId,
+      updatedProduct.typeProductId,
       updatedProduct.name,
       updatedProduct.description,
       updatedProduct.price,

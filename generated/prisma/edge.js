@@ -190,7 +190,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Git\\ia-challange\\api\\ia-challange\\generated\\prisma",
+      "value": "C:\\Git\\ia-challenge\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -204,7 +204,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Git\\ia-challange\\api\\ia-challange\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\Git\\ia-challenge\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
