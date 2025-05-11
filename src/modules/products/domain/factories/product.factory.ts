@@ -39,7 +39,6 @@ export class ProductFactory implements IProductFactory {
         now,
         now,
       );
-      console.log(product);
       return product;
     } catch (error) {
       console.error('Erro ao executar operação:', error);

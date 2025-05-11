@@ -11,7 +11,10 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { RequestInsertTypeProductDTO } from 'src/shared/application/dto/request/request-type-product.dto';
+import {
+  RequestInsertTypeProductDTO,
+  RequestUpdateTypeProductDTO,
+} from 'src/shared/application/dto/request/request-type-product.dto';
 import {
   IDeleteTypeProductService,
   IInsertTypeProductService,
@@ -24,7 +27,6 @@ import {
   IReadTypeProductServiceToken,
   IUpdateTypeProductServiceToken,
 } from 'src/shared/domain/constants';
-import { TypeProduct } from 'src/shared/domain/entities/type-product.entity';
 import { ResponseTypeProductDTO } from 'src/shared/application/dto/response/response-type-product.dto';
 import { InvalidDatasError } from '../users/domain/erros/invalid-data.error';
 
@@ -99,7 +101,7 @@ export class TypeProductsController {
   @Put(':id')
   async update(
     @Param('id') id: string,
-    @Body() typeProduct: TypeProduct,
+    @Body() typeProduct: RequestUpdateTypeProductDTO,
   ): Promise<ResponseTypeProductDTO> {
     try {
       return await this.updateTypeProductService.updateTypeProduct(typeProduct);

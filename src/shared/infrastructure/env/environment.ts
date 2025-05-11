@@ -9,9 +9,11 @@ dotenv.config();
 export interface EnvironmentInterface {
   databaseUrl: string;
   port: number;
+  frontendUrl: string;
 }
 
 export const environment: EnvironmentInterface = {
   databaseUrl: env.DATABASE_URL as string,
   port: env.SERVICE_PORT ? parseInt(env.SERVICE_PORT, 10) : 3000,
+  frontendUrl: env.FRONTEND_URL as string,
 };

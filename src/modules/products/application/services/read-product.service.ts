@@ -23,6 +23,7 @@ export class ReadProductService {
     if (!product) return null;
 
     const responseProduct = new ResponseProductDTO();
+    responseProduct.id = product.id;
     responseProduct.name = product.name;
     responseProduct.description = product.description;
     responseProduct.price = product.price;
@@ -39,6 +40,7 @@ export class ReadProductService {
 
       return products.map((product) => {
         const responseProduct = new ResponseProductDTO();
+        responseProduct.id = product.id;
         responseProduct.name = product.name;
         responseProduct.description = product.description;
         responseProduct.price = product.price;
@@ -60,6 +62,7 @@ export class ReadProductService {
     if (!products) return [];
     return products.map((product) => {
       const responseProduct = new ResponseProductDTO();
+      responseProduct.id = product.id;
       responseProduct.name = product.name;
       responseProduct.description = product.description;
       responseProduct.price = product.price;
@@ -74,6 +77,7 @@ export class ReadProductService {
     const products = await this.productRepository.findAll();
     return products.map((product) => {
       const responseProduct = new ResponseProductDTO();
+      responseProduct.id = product.id;
       responseProduct.name = product.name;
       responseProduct.description = product.description;
       responseProduct.price = product.price;

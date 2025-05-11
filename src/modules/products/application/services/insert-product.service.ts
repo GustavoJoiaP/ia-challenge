@@ -30,9 +30,7 @@ export class InsertProductService {
         product.price,
         product.stock,
       );
-      console.log('after factory');
       const createdProduct = await this.productRepository.create(newProduct);
-      console.log('after create');
       const responseProduct = new ResponseProductDTO();
       responseProduct.name = createdProduct.name;
       responseProduct.description = createdProduct.description;

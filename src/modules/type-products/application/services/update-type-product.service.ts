@@ -1,7 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { ITypeProductRepository } from 'src/shared/domain/repository/type-product-repository.interface';
 import { ITypeProductFactory } from 'src/shared/domain/factories/type-product-factory.interface';
-import { TypeProduct } from 'src/shared/domain/entities/type-product.entity';
 import {
   ITypeProductFactoryToken,
   ITypeProductRepositoryToken,
@@ -9,6 +8,7 @@ import {
 import { IUpdateTypeProductService } from 'src/shared/application/services/type-product-services.interface';
 import { ResponseTypeProductDTO } from 'src/shared/application/dto/response/response-type-product.dto';
 import { InvalidDatasError } from 'src/modules/users/domain/erros/invalid-data.error';
+import { RequestUpdateTypeProductDTO } from 'src/shared/application/dto/request/request-type-product.dto';
 
 @Injectable()
 export class UpdateTypeProductService implements IUpdateTypeProductService {
@@ -21,11 +21,17 @@ export class UpdateTypeProductService implements IUpdateTypeProductService {
   ) {}
 
   async updateTypeProduct(
-    typeProduct: TypeProduct,
+    typeProduct: RequestUpdateTypeProductDTO,
   ): Promise<ResponseTypeProductDTO> {
     try {
+      const existentTypeProduct = this.typeProductFactory.makeExistent(
+        typeProduct.id,
+        typeProduct.name,
+        typeProduct.description,
+        typeProduct.createdAt,
+      );
       const updatedTypeProduct =
-        await this.typeProductRepository.update(typeProduct);
+        await this.typeProductRepository.update(existentTypeProduct);
       return new ResponseTypeProductDTO(updatedTypeProduct);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {

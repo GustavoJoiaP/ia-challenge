@@ -1,5 +1,7 @@
-import { TypeProduct } from '../../domain/entities/type-product.entity';
-import { RequestInsertTypeProductDTO } from '../dto/request/request-type-product.dto';
+import {
+  RequestInsertTypeProductDTO,
+  RequestUpdateTypeProductDTO,
+} from '../dto/request/request-type-product.dto';
 import { ResponseTypeProductDTO } from '../dto/response/response-type-product.dto';
 
 export interface IInsertTypeProductService {
@@ -15,7 +17,9 @@ export interface IReadTypeProductService {
 }
 
 export interface IUpdateTypeProductService {
-  updateTypeProduct(typeProduct: TypeProduct): Promise<ResponseTypeProductDTO>;
+  updateTypeProduct(
+    typeProduct: RequestUpdateTypeProductDTO,
+  ): Promise<ResponseTypeProductDTO>;
 }
 
 export interface IDeleteTypeProductService {
