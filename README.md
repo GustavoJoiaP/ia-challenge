@@ -65,5 +65,5 @@ To manage database migrations, use the following commands:
  ### Start the application 🚀:
 
 ``` bash
- npm run start
+ yarn start:dev
 ```
