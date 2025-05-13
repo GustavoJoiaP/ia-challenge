@@ -47,6 +47,10 @@ This project uses [Prisma](https://www.prisma.io/docs/orm) as a ORM for database
 
 #### Migrations 🔁
 To manage database migrations, use the following commands:
+- Generate prisma client:
+  ```bash
+   npx prisma generate
+  ```
 
 - Create a new migration:
   ```bash
